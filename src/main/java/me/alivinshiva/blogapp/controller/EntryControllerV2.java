@@ -35,8 +35,8 @@ public class EntryControllerV2 {
 
 
     // working ✅  Getting all posts
-    @GetMapping("/all")
-    public ResponseEntity<List<BlogPost>> getAllPosts() {
+    @GetMapping("/all/{username}")
+    public ResponseEntity<List<BlogPost>> getAllPostsOfUsers(@PathVariable String username) {
 //        return blogPostService.getAllPosts();
         try {
             List<BlogPost> posts = blogPostService.getAllPosts();
