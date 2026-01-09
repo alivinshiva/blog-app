@@ -9,17 +9,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableTransactionManagement
+ @EnableTransactionManagement
 public class BlogAppApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BlogAppApplication.class, args);
     }
 
-    @Bean
-    public PlatformTransactionManager add(MongoDatabaseFactory mongoDbFactory) {
-        return new MongoTransactionManager(mongoDbFactory);
-    }
+     @Bean
+     public PlatformTransactionManager add(MongoDatabaseFactory mongoDbFactory) {
+         return new MongoTransactionManager(mongoDbFactory);
+     }
 
 }
 
