@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -20,73 +22,32 @@ import java.util.List;
 @RequestMapping("/user")
 public class UsersController {
 
-
     @Autowired
     private UserService userService;
 
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     private UserRepo userRepo;
 
-    // endpoint for login - not yet implemented
-    @PostMapping("/login")
-    public User login() {
-//        userRepo.save();
-        return null;
-    }
 
-    // working ✅   Signing up a new user
-    @PostMapping
-    public User signup(@RequestBody User newUser) {
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        newUser.setRoles(Arrays.asList("USER"));
-        userRepo.save(newUser);
-        return newUser;
-    }
-
-
-    // working ✅  Getting all users
-    @GetMapping("/all")
-    public List<User> getAlluser() {
-        return userService.getAllUsers();
-    }
-
-    // Working ✅  Updating user by username
-    @PutMapping("/{username}")
-    public ResponseEntity<User> updateUserByUsername(@RequestBody User updatedUser, @PathVariable String username) {
-//        User existedUser = userService.findByUsername(username);
-//        if (existedUser != null) {
-            User user = userService.updateUser(username, updatedUser);
+    // working ✅  updating authenticated user with username and password
+    // authenticated  route requires username and password in basic auth header.
+    @PutMapping
+    public ResponseEntity<User> updateUserByUsername(@RequestBody User updatedUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User user = userService.updateUser( currentUsername,updatedUser);
             return new ResponseEntity<>(user, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-
     }
 
-    // working ✅  Deleting user by username
-    @DeleteMapping("/{username}")
-    public boolean deleteUser(@PathVariable  String username) {
-        User userInDb = userService.findByUsername(username);
-        if (userInDb != null) {
-            userService.deleteUserByUsername(username);
-            return true;
-        }
-        return false;
+    // working ✅  Deleting user by username for logged in user
+    // authenticated route requires username and password in basic auth header.
+    @DeleteMapping
+    public boolean deleteUser() {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.deleteUserByUsername(currentUsername);
     }
-
-    // working ✅  Getting user by username
-    @GetMapping("/{username}")
-    public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
-        User userInDb = userService.findByUsername(username);
-        if (userInDb != null) {
-            return new ResponseEntity<>(userInDb, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(userInDb, HttpStatus.NOT_FOUND);
-    }
-
-
 
 
 

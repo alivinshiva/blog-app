@@ -30,13 +30,14 @@ public class SpringSecurity {
 
         return http.authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(request -> request
-                        .requestMatchers("/user").permitAll()
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/user/signup").permitAll()
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/user/all").authenticated()
                         .requestMatchers("/posts/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())   
+                .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
 
