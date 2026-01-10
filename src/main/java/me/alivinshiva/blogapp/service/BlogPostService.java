@@ -38,16 +38,16 @@ public class BlogPostService {
         return blogPostRepo.findById(id);
     }
 
-    public Boolean deletePostById(ObjectId id, String username) {
-        User user = userService.findByUsername(username);
-        if (!blogPostRepo.existsById(id)) {
-            return false;
-        }
-        blogPostRepo.deleteById(id);
-        user.getUserBlogPost().removeIf(post -> post.getId().equals(id));
-        userService.saveUser(user);
-        return true;
-    }
+//    public Boolean deletePostById(ObjectId id, String username) {
+//        User user = userService.findByUsername(username);
+//        if (!blogPostRepo.existsById(id)) {
+//            return false;
+//        }
+//        blogPostRepo.deleteById(id);
+//        user.getUserBlogPost().removeIf(post -> post.getId().equals(id));
+//        userService.saveUser(user);
+//        return true;
+//    }
 
     // Update post with user verification
     public BlogPost updatePost(ObjectId id, BlogPost updatedPost, String username) {

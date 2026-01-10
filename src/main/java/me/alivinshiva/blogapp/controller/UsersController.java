@@ -2,13 +2,18 @@ package me.alivinshiva.blogapp.controller;
 
 
 import me.alivinshiva.blogapp.entity.User;
+import me.alivinshiva.blogapp.repo.UserRepo;
 import me.alivinshiva.blogapp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -19,16 +24,24 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Autowired
+    private UserRepo userRepo;
+
     // endpoint for login - not yet implemented
     @PostMapping("/login")
     public User login() {
+//        userRepo.save();
         return null;
     }
 
     // working ✅   Signing up a new user
-    @PostMapping("/signup")
+    @PostMapping
     public User signup(@RequestBody User newUser) {
-        userService.saveUser(newUser);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        newUser.setRoles(Arrays.asList("USER"));
+        userRepo.save(newUser);
         return newUser;
     }
 

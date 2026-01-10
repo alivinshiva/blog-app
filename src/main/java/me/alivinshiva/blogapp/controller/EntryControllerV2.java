@@ -71,7 +71,8 @@ public class EntryControllerV2 {
     // working ✅    Deleting post by Id for a specific user
     @DeleteMapping("/{username}/{myId}")
     public ResponseEntity<?> deletePost(@PathVariable String username,  @PathVariable ObjectId myId) {
-        boolean delete = blogPostService.deletePostById(myId, username);
+//        boolean delete = blogPostService.deletePostById(myId, username);
+        boolean delete = false;
         try {
             if (!delete) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
