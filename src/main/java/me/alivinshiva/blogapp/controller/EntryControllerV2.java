@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -27,10 +28,11 @@ public class EntryControllerV2 {
 
 
     // working ✅   Adding Posts to a user
-    @PostMapping("/{username}")
-    public ResponseEntity<BlogPost> addPost(@RequestBody BlogPost myPost, @PathVariable String username) {
+    @PostMapping("/add")
+    public ResponseEntity<BlogPost> addPost(@RequestBody BlogPost myPost) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            blogPostService.saveBlogPost(myPost, username);
+            blogPostService.saveBlogPost(myPost, name);
             return new ResponseEntity<> (myPost, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
@@ -38,13 +40,12 @@ public class EntryControllerV2 {
     }
 
 
-    // working ✅  Getting all posts
-    @GetMapping("/all/{username}")
-    public ResponseEntity<List<BlogPost>> getAllPostsOfUsers(@PathVariable String username) {
-//        return blogPostService.getAllPosts();
+    // working ✅  Getting all posts of authenticated user
+    @GetMapping("/all")
+    public ResponseEntity<List<BlogPost>> getAllPostsOfUsers() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            User user = userService.findByUsername(username);
-            List<BlogPost> posts = user.getUserBlogPost();
+            List<BlogPost> posts = userService.getUserPosts(name);
             if (posts.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -69,11 +70,11 @@ public class EntryControllerV2 {
 
 
     // working ✅    Deleting post by Id for a specific user
-    @DeleteMapping("/{username}/{myId}")
-    public ResponseEntity<?> deletePost(@PathVariable String username,  @PathVariable ObjectId myId) {
-//        boolean delete = blogPostService.deletePostById(myId, username);
-        boolean delete = false;
+    @DeleteMapping("/{myId}")
+    public ResponseEntity<?> deletePost(@PathVariable ObjectId myId) {
         try {
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            Boolean delete = blogPostService.deletePostById(myId, name);
             if (!delete) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -86,10 +87,12 @@ public class EntryControllerV2 {
 
 
     // working ✅  Updating post by Id for a specific user
-    @PutMapping("/{username}/{myId}")
-    public ResponseEntity<BlogPost> updatePost(@PathVariable ObjectId myId,@RequestBody BlogPost newPost, @PathVariable String username) {
+    @PutMapping("/id/{myId}")
+    public ResponseEntity<BlogPost> updatePost(@PathVariable ObjectId myId,@RequestBody BlogPost newPost) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
         try {
-            BlogPost updated = blogPostService.updatePost(myId, newPost);
+            BlogPost updated = blogPostService.updatePost(myId, newPost, name);
             if (updated != null) {
                return new ResponseEntity<>(updated, HttpStatus.OK);
            } else {

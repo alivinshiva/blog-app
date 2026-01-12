@@ -3,6 +3,7 @@ package me.alivinshiva.blogapp.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@Profile("dev")
 public class SpringSecurity {
 
 
@@ -32,10 +34,10 @@ public class SpringSecurity {
             .authorizeHttpRequests(request -> request
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/user/signup").permitAll()
-                        .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/user/all").authenticated()
                         .requestMatchers("/posts/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/admin/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)

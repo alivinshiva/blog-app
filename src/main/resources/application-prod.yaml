@@ -26,3 +26,6 @@ de:
     mongodb:
       embedded:
         enabled: false
+
+server:
+  port: 8081

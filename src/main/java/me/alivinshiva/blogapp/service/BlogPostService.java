@@ -15,6 +15,7 @@ import java.util.Optional;
 @Component
 public class BlogPostService {
 
+
     @Autowired
     private BlogPostRepo blogPostRepo;
 
@@ -25,6 +26,7 @@ public class BlogPostService {
     public void saveBlogPost(BlogPost blogPost, String username) {
         User user = userService.findByUsername(username);
         blogPost.setDate(LocalDateTime.now());
+        blogPost.setUser(username);
         BlogPost saved = blogPostRepo.save(blogPost);
         user.getUserBlogPost().add(saved);
         userService.saveUser(user);
@@ -38,20 +40,23 @@ public class BlogPostService {
         return blogPostRepo.findById(id);
     }
 
-//    public Boolean deletePostById(ObjectId id, String username) {
-//        User user = userService.findByUsername(username);
-//        if (!blogPostRepo.existsById(id)) {
-//            return false;
-//        }
-//        blogPostRepo.deleteById(id);
-//        user.getUserBlogPost().removeIf(post -> post.getId().equals(id));
-//        userService.saveUser(user);
-//        return true;
-//    }
+    public Boolean deletePostById(ObjectId id, String username) {
+        User user = userService.findByUsername(username);
+        if (user.getUserBlogPost().stream().noneMatch(post-> post.getId().equals(id))) {
+            return  false;
+        }
+        blogPostRepo.deleteById(id);
+        user.getUserBlogPost().removeIf(post -> post.getId().equals(id));
+        userService.saveUser(user);
+        return true;
+    }
 
     // Update post with user verification
     public BlogPost updatePost(ObjectId id, BlogPost updatedPost, String username) {
         User user = userService.findByUsername(username);
+        if (user.getUserBlogPost().stream().noneMatch(post -> post.getId().equals(id))) {
+            throw new IllegalArgumentException("User does not own the blog post with the given ID");
+        }
         return getBlogPost(id, updatedPost);
     }
 

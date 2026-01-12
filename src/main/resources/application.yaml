@@ -1,12 +1,32 @@
-spring.application.name=BlogApp
+#spring.application.name=BlogApp
+#
+## database configuration
+#spring.mongodb.uri=mongodb+srv://BlogAppAdmin:K5IurY0SQOZVfjPd@alivinblogapp.uly6jed.mongodb.net/blogdb?retryWrites=true&w=majority&appName=AlivinBlogApp
+#spring.mongodb.database=blogdb
+#spring.data.mongodb.auto-index-creation=true
+#
+## Explicitly disable embedded Mongo to use Atlas
+#spring.mongodb.embedded.enabled=false
+#de.flapdoodle.mongodb.embedded.enabled=false
 
-# database configuration
-spring.mongodb.uri=mongodb+srv://BlogAppAdmin:K5IurY0SQOZVfjPd@alivinblogapp.uly6jed.mongodb.net/blogdb?retryWrites=true&w=majority&appName=AlivinBlogApp
-spring.mongodb.database=blogdb
-spring.data.mongodb.auto-index-creation=true
+#spring:
+#  application:
+#    name: BlogApp
+#  mongodb:
+#    uri: mongodb+srv://BlogAppAdmin:K5IurY0SQOZVfjPd@alivinblogapp.uly6jed.mongodb.net/blogdb?retryWrites=true&w=majority&appName=AlivinBlogApp
+#    database: blogdb
+#  data:
+#    mongodb:
+#      auto-index-creation: true
+##  autoconfigure:
+##    exclude: org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration
+#
+#de:
+#  flapdoodle:
+#    mongodb:
+#      embedded:
+#        enabled: false
 
-# Explicitly disable embedded Mongo to use Atlas
-spring.mongodb.embedded.enabled=false
-de.flapdoodle.mongodb.embedded.enabled=false
-
-
+spring:
+  profiles:
+    active: dev
