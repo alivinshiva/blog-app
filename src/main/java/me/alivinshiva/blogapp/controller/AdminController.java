@@ -47,4 +47,12 @@ public class AdminController {
     public User createAdminUser(@RequestBody User user) {
         return userService.createAdminUser(user);
     }
+
+
+    @GetMapping("/nl")
+    public List<User> getUserForNL() {
+        List<User> userForNewsletter = userService.getUserForNewsletter();
+        return userForNewsletter;
+    }
+
 }

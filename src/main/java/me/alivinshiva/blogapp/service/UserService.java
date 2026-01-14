@@ -2,6 +2,7 @@ package me.alivinshiva.blogapp.service;
 
 import me.alivinshiva.blogapp.entity.BlogPost;
 import me.alivinshiva.blogapp.entity.User;
+import me.alivinshiva.blogapp.repo.UserImplRepo;
 import me.alivinshiva.blogapp.repo.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private UserImplRepo userImplRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -97,6 +101,11 @@ public class UserService {
         User user = userRepo.findByUsername(name);
         List<BlogPost> post = user.getUserBlogPost();
         return post;
+
+    }
+
+    public List<User> getUserForNewsletter() {
+        return userImplRepo.getUserFroNewsletter();
 
     }
 }
