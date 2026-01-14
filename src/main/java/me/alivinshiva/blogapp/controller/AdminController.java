@@ -3,6 +3,7 @@ package me.alivinshiva.blogapp.controller;
 import me.alivinshiva.blogapp.entity.BlogPost;
 import me.alivinshiva.blogapp.entity.User;
 import me.alivinshiva.blogapp.service.BlogPostService;
+import me.alivinshiva.blogapp.service.EmailService;
 import me.alivinshiva.blogapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ public class AdminController {
     @Autowired
     private BlogPostService blogPostService;
 
+    @Autowired
+    EmailService emailService;
 
     // Admin endpoint to get all posts in db.
     @GetMapping("/users")
@@ -55,4 +58,8 @@ public class AdminController {
         return userForNewsletter;
     }
 
+    @GetMapping("/sendmail")
+    public void sendmail() {
+        emailService.sendMail("alivin612003@gmail.com", "This is a java mail service", "Hello from java mail service");
+    }
 }
