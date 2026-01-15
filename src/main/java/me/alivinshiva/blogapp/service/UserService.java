@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ListableBeanFactory listableBeanFactory;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     // Create new user with password encoding and default role
@@ -107,5 +111,13 @@ public class UserService {
     public List<User> getUserForNewsletter() {
         return userImplRepo.getUserFroNewsletter();
 
+    }
+
+    public String redisTest() {
+        redisTemplate.opsForValue().set("name", "Alivin");
+
+        String key = redisTemplate.opsForValue().get("admin").toString();
+        System.out.println(key);
+        return key;
     }
 }

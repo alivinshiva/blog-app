@@ -29,4 +29,9 @@ public class PublicController {
             return new ResponseEntity<>(HttpStatus.CONFLICT); // Username exists
         }
     }
+
+    @GetMapping("/redis")
+    public String test() {
+        return userService.redisTest();
+    }
 }
